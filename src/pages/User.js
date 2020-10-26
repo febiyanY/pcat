@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from '../axios/axios-default'
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -18,6 +18,8 @@ import TextField from '@material-ui/core/TextField';
 import Modal from '../components/Modal'
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import {useDispatch} from 'react-redux'
+import {onSetLoading} from '../state/ducks/ui'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -34,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DenseTable() {
     const classes = useStyles()
-    // const [anchorMenu, setAnchorMenu] = useState(null)
+    const dispatch = useDispatch()
     const [users, setUsers] = useState([])
     const [form, setForm] = useState({ username: '', name: '', password:'' })
     const [modal, setModal] = useState({ show: false, title: 'Add User', confirmText: 'Add' })
@@ -43,15 +45,17 @@ export default function DenseTable() {
     const [mode, setMode] = useState('add')
     const [checkPassword, setCheckPassword] = useState(false)
 
-    useEffect(() => {
-        loadUsers()
-    }, [])
-
-    const loadUsers = () => {
+    const loadUsers = useCallback(() => {
+        dispatch(onSetLoading(true))
         axios.get('/user').then(res => {
             setUsers(res.data)
+            dispatch(onSetLoading(false))
         })
-    }
+    },[dispatch])
+    
+    useEffect(() => {
+        loadUsers()
+    }, [loadUsers])
 
     // const openMenu = (e) => {
     //     setAnchorMenu(e.currentTarget)
@@ -69,7 +73,7 @@ export default function DenseTable() {
 
     const openAddUserModal = () => {
         setMode('add')
-        setForm({...form, username: '', name: '' })
+        setForm({username: '', name: '', password: '' })
         setModal(() => ({
             show: true, title: 'Add User', confirmText: 'Add'
         }))
@@ -77,7 +81,7 @@ export default function DenseTable() {
     const openEditUserModal = (user) => {
         setMode('edit')
         setSelectedUser(user.id)
-        setForm({ ...form, username: user.username, name: user.name })
+        setForm({username: user.username, name: user.name, password: ''  })
         setModal(() => ({
             show: true, title: 'Edit User', confirmText: 'Save'
         }))
@@ -91,13 +95,20 @@ export default function DenseTable() {
     }
 
     const addUser = () => {
-        axios.post('/user', form).then(res => {
+        dispatch(onSetLoading(true))
+        let payload = {...form}
+        if(payload.password!==null && payload.password===""){
+            delete payload.password
+        }
+        axios.post('/user', payload).then(res => {
             loadUsers()
             setModal(() => ({ ...modal, show: false }))
-            setForm({...form, username: '', name: '' })
+            setForm({username: '', name: '', password: ''  })
+            dispatch(onSetLoading(false))
         })
     }
     const editUser = () => {
+        dispatch(onSetLoading(true))
         const data = {
             user_id: selectedUser,
             update: form
@@ -105,12 +116,15 @@ export default function DenseTable() {
         axios.patch('/user', data).then(res => {
             loadUsers()
             setModal(() => ({ ...modal, show: false }))
+            dispatch(onSetLoading(false))
         })
     }
     const deleteUser = () => {
+        dispatch(onSetLoading(true))
         axios.delete(`/user/${selectedUser}`).then(res => {
             loadUsers()
             setModal(() => ({ ...modal, show: false }))
+            dispatch(onSetLoading(false))
         })
     }
 

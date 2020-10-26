@@ -5,5 +5,8 @@ export const onSetDrawer = (data) => dispatch => {
 }
 
 export const onSetLoading = (data) => dispatch => {
-    dispatch(setLoading(data))
+    return new Promise((resolve, reject) => {
+        dispatch(setLoading(data))
+        resolve()
+    })
 }

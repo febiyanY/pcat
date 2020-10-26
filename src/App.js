@@ -4,7 +4,7 @@ import './App.css';
 import { GenerateRoute, routeList } from './routes/routes'
 import { Switch, BrowserRouter, Route } from 'react-router-dom'
 import NotFound from './pages/404'
-import NProgress from './components/NProgress'
+import Progress from './components/Progress'
 import Layout from './layout/Layout'
 import {useDispatch} from 'react-redux'
 import {onCheckAuth} from './state/ducks/auth'
@@ -20,7 +20,7 @@ function App() {
     <React.Fragment>
       <BrowserRouter>
         <Layout>
-          <Suspense fallback={<NProgress />}>
+          <Suspense fallback={<Progress />}>
             <Switch>
               {routeList.map((route, i) => {
                 return <GenerateRoute {...route} key={i} />

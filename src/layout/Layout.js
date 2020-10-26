@@ -9,6 +9,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import {useDispatch, useSelector} from 'react-redux'
 import Drawer from '../components/Drawer'
 import {onSetDrawer} from '../state/ducks/ui'
+import Progress from '../components/Progress'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,8 +37,9 @@ export default function Layout(props) {
   return (
     <div className={classes.root}>
       <Drawer show={drawer} />
-
+      
       <AppBar position="sticky">
+      <Progress />
         <Toolbar>
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={openDrawer}>
             <MenuIcon />

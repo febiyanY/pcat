@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-
 import { useSelector, useDispatch } from 'react-redux'
 import { onAuth } from '../state/ducks/auth'
 import { Redirect } from 'react-router-dom'
@@ -22,6 +21,7 @@ const Login = props => {
 
     const dispatch = useDispatch()
     const { user, error } = useSelector(state => state.auth)
+    
     const [form, setForm] = useState({ username: '', password: '' })
 
     const handleFormChanges = (e) => {

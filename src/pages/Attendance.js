@@ -6,17 +6,22 @@ import ListItem from '@material-ui/core/ListItem';
 // import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import axios from '../axios/axios-default'
+import {useDispatch} from 'react-redux'
+import {onSetLoading} from '../state/ducks/ui'
 
 export default function Attendance(props) {
     const today = new Date()
     const [attendances, setAttendances] = useState(null)
     const [date, setDate] = useState(`${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`)
+    const dispatch = useDispatch()
 
     useEffect(() => {
+        dispatch(onSetLoading(true))
         axios.get(`/attendance/perday?date=${date}`).then(res => {
             setAttendances(res.data)
+            dispatch(onSetLoading(false))
         })
-    }, [date])
+    }, [date, dispatch])
 
     const changeDate = (e) => {
         setDate(e.target.value)

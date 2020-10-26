@@ -1,7 +1,7 @@
 import React from 'react'
 import {useSelector} from 'react-redux'
 import {Route, Redirect} from 'react-router-dom'
-import NProgress from '../components/NProgress'
+import Progress from '../components/Progress'
 
 export const GenerateRoute = props => {
     const {authLoading, user} = useSelector(state => state.auth)
@@ -10,7 +10,7 @@ export const GenerateRoute = props => {
         path={props.path}
         exact={props.exact}
         render={routeProps => {
-            if(authLoading) return <NProgress show />
+            if(authLoading) return <Progress show />
 
             if(props.auth){
                 if(!user) return <Redirect to='/login' />

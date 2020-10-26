@@ -11,6 +11,8 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline'
 import Button from '@material-ui/core/Button';
 import AddUser from './schedule/AddUser'
 import Modal from '../components/Modal'
+import {useDispatch} from 'react-redux'
+import {onSetLoading} from '../state/ducks/ui'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -22,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Schedule = props => {
     const classes = useStyles();
-
+    const dispatch = useDispatch()
     const [schedule, setSchedule] = useState(null)
     const [day, setDay] = useState(1)
     const [addUserModal, setAddUserModal] = useState(false)
@@ -30,10 +32,12 @@ const Schedule = props => {
     const [selectedUserId, setSelectedUserId] = useState(null)
 
     const loadAvailableUser = useCallback(() => {
+        dispatch(onSetLoading(true))
         axios.get(`/schedule/${day}`).then(res => {
             setSchedule(res.data)
+            dispatch(onSetLoading(false))
         })
-    }, [day])
+    }, [day, dispatch])
 
     useEffect(() => {
         loadAvailableUser()
@@ -69,24 +73,28 @@ const Schedule = props => {
     }
 
     const handleAddUser = (userId, dayId) => {
+        dispatch(onSetLoading(true))
         axios.post('/schedule', { user_id: userId, day_id: dayId }).then(res => {
             loadAvailableUser()
             setAddUserModal(false)
+            dispatch(onSetLoading(false))
             // setConfirmModal(() => ({
             //     ...confirmModal, show: false
             // }))
         })
     }
     const handleRemoveUser = () => {
+        dispatch(onSetLoading(true))
         axios.delete(`/schedule/${selectedUserId}/${day}`).then(res => {
             loadAvailableUser()
             setConfirmModal(() => ({
                 ...confirmModal, show: false
             }))
+            dispatch(onSetLoading(false))
         })
     }
 
-    if (!schedule) return <p>Loading....</p>
+    if (!schedule) return null
     return (
         <div>
             <AddUser show={addUserModal} handleClose={closeAddUser} day={day} onAddUser={handleAddUser} />
