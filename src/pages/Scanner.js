@@ -6,7 +6,7 @@ import udahAbsenGif from '../assets/gifs/udahabsen.gif'
 import salahHariGif from '../assets/gifs/salahhari.gif'
 
 export default function QrScanner(props) {
-
+    
     const [result, setResult] = useState(null)
     const [error, setError] = useState(null)
     const [userStatus, setUserStatus] = useState(null)
@@ -18,7 +18,7 @@ export default function QrScanner(props) {
             setUserStatus(res.data)
         }).catch(err => {
             const errMsg = err.response.data
-            if(errMsg.message==='you are not in todays schedule' || 'Unauthorized'){
+            if(errMsg.message==='you are not in todays schedule'){
                 setGif(salahHariGif)
             }else if(errMsg.message==='udah absen'){
                 setGif(udahAbsenGif)
@@ -30,8 +30,7 @@ export default function QrScanner(props) {
     useEffect(() => {
         checkAttendance()
         setSocket(() => io(process.env.REACT_APP_API_URL + '/qrcode'))
-
-    }, [checkAttendance])
+    }, [checkAttendance, ])
 
     useEffect(() => {
         if (result) {
@@ -39,6 +38,7 @@ export default function QrScanner(props) {
                 socket.emit('absenSuccess')
                 setUserStatus({ message: 'Success' })
                 setError(null)
+                setGif(udahAbsenGif)
             }).catch(err => {
                 setError(err.response.data.message)
             })

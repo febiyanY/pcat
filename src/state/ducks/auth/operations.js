@@ -18,6 +18,7 @@ export const onAuth = (data) => dispatch => {
 export const onLogout = () => dispatch => {
     axios.get('/logout').then(res => {
         dispatch(logout())
+        dispatch(onSetLoading(false))
     })
 }
 
