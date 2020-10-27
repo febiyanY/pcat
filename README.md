@@ -1,3 +1,5 @@
+This is an Attendance system that used a QR code as it’s authentication method. It has a Geofencing capability to limit user access to the system. You just need a phone or computer and an internet connection, and you good to go. Say goodbye to paper and the old school fingerprint system. 
+
 The Back-End code can be found here: https://github.com/febiyanY/pcat-back
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
